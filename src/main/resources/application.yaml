@@ -1,3 +1,6 @@
 spring:
   application:
     name: approval-system
+
+server:
+  port: ${PORT:5000}

@@ -79,7 +79,6 @@ public class PurchaseRequestService {
             approval.setToken(generateToken());
             approval.setOtp(generateOtp());
 
-            // AJUSTE: LINK DE APROBACIÓN (SIMULACIÓN EMAIL)
             String link = "http://localhost:3000/approve"
                     + "?approval_token=" + approval.getToken()
                     + "&approval_email=" + approval.getEmail();
@@ -111,11 +110,18 @@ public class PurchaseRequestService {
                 .map(Approval::getId)
                 .toList();
 
+        List<String> otpList = saved.getApprovals()
+                .stream()
+                .map(Approval::getOtp)
+                .toList();
+
         return PurchaseRequestResponseDTO.builder()
                 .requestId(saved.getId())
                 .status(saved.getStatus())
-                .message("Solicitud creada con aprobaciones")
+                .message("Solicitud creada con OTP: " +
+                        saved.getApprovals().get(0).getOtp())
                 .approvalIds(approvalIds)
+                .otpList(otpList)
                 .build();
     }
 }

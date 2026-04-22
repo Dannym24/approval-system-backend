@@ -17,4 +17,5 @@ public class PurchaseRequestResponseDTO {
     private String status;
     private String message;
     private List<String> approvalIds;
+    private List<String> otpList;
 }
