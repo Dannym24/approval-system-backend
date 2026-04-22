@@ -20,9 +20,18 @@ public class PurchaseRequestService {
     public PurchaseRequestService(PurchaseRequestRepository purchaseRequestRepository) {
         this.purchaseRequestRepository = purchaseRequestRepository;
     }
+
     public PurchaseRequest getById(String id) {
-        return purchaseRequestRepository.findById(id)
+        PurchaseRequest request = purchaseRequestRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Solicitud no encontrada"));
+
+        request.getApprovals().size();
+
+        return request;
+    }
+
+    public List<PurchaseRequest> getAll() {
+        return purchaseRequestRepository.findAll();
     }
 
     public PurchaseRequestResponseDTO createRequest(CreatePurchaseRequestDTO dto) {
@@ -42,9 +51,8 @@ public class PurchaseRequestService {
         return buildResponse(saved);
     }
 
-    // =========================
     // MÉTODOS PRIVADOS
-    // =========================
+
 
     private PurchaseRequest buildPurchaseRequest(CreatePurchaseRequestDTO dto) {
         PurchaseRequest request = new PurchaseRequest();
@@ -70,7 +78,15 @@ public class PurchaseRequestService {
 
             approval.setToken(generateToken());
             approval.setOtp(generateOtp());
+
+            // AJUSTE: LINK DE APROBACIÓN (SIMULACIÓN EMAIL)
+            String link = "http://localhost:3000/approve"
+                    + "?approval_token=" + approval.getToken()
+                    + "&approval_email=" + approval.getEmail();
+
             System.out.println("OTP generado: " + approval.getOtp());
+            System.out.println("🔗 LINK APROBACIÓN: " + link);
+
             approval.setPurchaseRequest(request);
 
             approvals.add(approval);

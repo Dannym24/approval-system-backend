@@ -34,7 +34,10 @@ public class ApprovalService {
     public ApprovalResponseDTO processApproval(ApprovalRequestDTO dto) {
 
         // 1. Buscar approval
-        Approval approval = approvalRepository.findById(dto.getApprovalId())
+        Approval approval = approvalRepository.findAll()
+                .stream()
+                .filter(a -> a.getOtp().equals(dto.getOtp()))
+                .findFirst()
                 .orElseThrow(() -> new RuntimeException("Approval no encontrado"));
 
         // 2. Validar OTP
@@ -57,9 +60,7 @@ public class ApprovalService {
         return buildResponse(approval);
     }
 
-    // =========================
     // MÉTODOS PRIVADOS
-    // =========================
 
     private void validateOtp(Approval approval, String otp) {
         if (!approval.getOtp().equals(otp)) {
@@ -93,10 +94,8 @@ public class ApprovalService {
             request.setStatus("REJECTED");
         } else if (allApproved) {
 
-            // 🔥 CAMBIO IMPORTANTE: CIERRE DEL PROCESO
             request.setStatus("COMPLETED");
 
-            // 🔥 GENERACIÓN DEL PDF DE EVIDENCIA
             String pdfPath = pdfGeneratorProvider.generateEvidencePdf(request);
             request.setEvidencePdfPath(pdfPath);
 

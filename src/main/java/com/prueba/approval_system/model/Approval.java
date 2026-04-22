@@ -1,5 +1,6 @@
 package com.prueba.approval_system.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,7 +20,7 @@ public class Approval {
 
     private String email;
 
-    private String status; // PENDING, APPROVED, REJECTED
+    private String status;
 
     private String otp;
 
@@ -31,5 +32,6 @@ public class Approval {
 
     @ManyToOne
     @JoinColumn(name = "purchase_request_id")
+    @JsonIgnore
     private PurchaseRequest purchaseRequest;
 }
